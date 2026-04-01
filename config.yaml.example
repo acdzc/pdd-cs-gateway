@@ -1,0 +1,44 @@
+"""
+配置文件模板
+复制为 config.yaml 并填入实际值
+"""
+app_name: "pdd-cs-gateway"
+app_version: "1.0.0"
+debug: false
+
+# 拼多多开放平台配置
+# 从 https://open.pinduoduo.com 获取
+pdd:
+  client_id: "YOUR_CLIENT_ID"
+  client_secret: "YOUR_CLIENT_SECRET"
+  access_token: null  # 授权后获取
+  api_url: "https://api-gw.pinduoduo.com/api/router"
+
+# 飞书配置
+feishu:
+  app_id: "YOUR_FEISHU_APP_ID"
+  app_secret: "YOUR_FEISHU_APP_SECRET"
+  webhook_url: null  # 自定义机器人 Webhook
+  receive_id: null   # 接收消息的群/用户ID
+
+# OpenClaw Fleet 配置
+fleet:
+  url: "http://localhost:18789"
+  token: null
+  instance_id: "pdd-cs-gateway-001"
+
+# Redis 配置
+redis:
+  url: "redis://localhost:6379/0"
+
+# 自动回复配置
+auto_reply:
+  enabled: true
+  human_takeover_keywords:
+    - "人工"
+    - "投诉"
+    - "退款"
+    - "举报"
+    - "差评"
+    - "维权"
+  max_auto_reply_count: 5
