@@ -1,7 +1,7 @@
 """
 拼多多客服网关 - 配置管理
 """
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
 from typing import Optional
 from functools import lru_cache
@@ -9,6 +9,12 @@ from functools import lru_cache
 
 class Settings(BaseSettings):
     """应用配置"""
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore"
+    )
 
     # 应用基础配置
     app_name: str = "pdd-cs-gateway"
@@ -42,11 +48,6 @@ class Settings(BaseSettings):
         alias="HUMAN_TAKEOVER_KEYWORDS"
     )
     max_auto_reply_count: int = 5  # 同一会话最大自动回复次数，超过转人工
-
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-        extra = "ignore"
 
 
 @lru_cache()

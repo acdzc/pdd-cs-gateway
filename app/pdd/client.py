@@ -73,16 +73,23 @@ class PddClient:
         client_id: str,
         client_secret: str,
         api_url: str = "https://api-gw.pinduoduo.com/api/router",
-        access_token: Optional[str] = None
+        access_token: Optional[str] = None,
+        proxy: Optional[str] = None
     ):
         self.client_id = client_id
         self.client_secret = client_secret
         self.api_url = api_url
         self.access_token = access_token
+        self.proxy = proxy  # None = 不使用代理
         self._http_client: Optional[httpx.AsyncClient] = None
 
     async def __aenter__(self):
-        self._http_client = httpx.AsyncClient(timeout=30.0)
+        # trust_env=False 禁用系统代理，避免 SOCKS 代理依赖问题
+        self._http_client = httpx.AsyncClient(
+            timeout=30.0,
+            proxy=self.proxy,
+            trust_env=False if self.proxy is None else True
+        )
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
@@ -123,7 +130,11 @@ class PddClient:
         params = self._build_params(method, **kwargs)
 
         if not self._http_client:
-            self._http_client = httpx.AsyncClient(timeout=30.0)
+            self._http_client = httpx.AsyncClient(
+                timeout=30.0,
+                proxy=self.proxy,
+                trust_env=False if self.proxy is None else True
+            )
 
         try:
             response = await self._http_client.post(self.api_url, data=params)
@@ -171,7 +182,12 @@ class PddClient:
         )
 
         if result.get("success") is False:
-            return ReplyResult(success=False, error_msg=result.get("error", {}).get("error_msg"))
+            error = result.get("error")
+            if isinstance(error, dict):
+                error_msg = error.get("error_msg", str(error))
+            else:
+                error_msg = str(error) if error else "Unknown error"
+            return ReplyResult(success=False, error_msg=error_msg)
 
         response = result.get("pdd_customer_service_message_send_response", {})
         return ReplyResult(

@@ -35,12 +35,14 @@ class FeishuNotifier:
         app_id: str,
         app_secret: str,
         webhook_url: Optional[str] = None,
-        receive_id: Optional[str] = None
+        receive_id: Optional[str] = None,
+        proxy: Optional[str] = None
     ):
         self.app_id = app_id
         self.app_secret = app_secret
         self.webhook_url = webhook_url
         self.receive_id = receive_id
+        self.proxy = proxy  # None = 不使用代理
         self._tenant_access_token: Optional[str] = None
         self._http_client: Optional[httpx.AsyncClient] = None
 
@@ -49,7 +51,10 @@ class FeishuNotifier:
         if self._tenant_access_token:
             return self._tenant_access_token
 
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(
+            proxy=self.proxy,
+            trust_env=False if self.proxy is None else True
+        ) as client:
             response = await client.post(
                 "https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal",
                 json={
@@ -86,7 +91,10 @@ class FeishuNotifier:
         """
         token = await self._get_tenant_access_token()
 
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(
+            proxy=self.proxy,
+            trust_env=False if self.proxy is None else True
+        ) as client:
             response = await client.post(
                 "https://open.feishu.cn/open-apis/im/v1/messages",
                 headers={
@@ -210,7 +218,10 @@ class FeishuNotifier:
             logger.warning("No webhook_url configured")
             return False
 
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(
+            proxy=self.proxy,
+            trust_env=False if self.proxy is None else True
+        ) as client:
             response = await client.post(
                 self.webhook_url,
                 json={

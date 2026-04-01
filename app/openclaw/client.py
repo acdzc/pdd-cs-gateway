@@ -34,15 +34,21 @@ class OpenClawClient:
         self,
         fleet_url: str,
         instance_id: str,
-        token: Optional[str] = None
+        token: Optional[str] = None,
+        proxy: Optional[str] = None
     ):
         self.fleet_url = fleet_url.rstrip("/")
         self.instance_id = instance_id
         self.token = token
+        self.proxy = proxy  # None = 不使用代理
         self._http_client: Optional[httpx.AsyncClient] = None
 
     async def __aenter__(self):
-        self._http_client = httpx.AsyncClient(timeout=60.0)
+        self._http_client = httpx.AsyncClient(
+            timeout=60.0,
+            proxy=self.proxy,
+            trust_env=False if self.proxy is None else True
+        )
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
@@ -76,7 +82,11 @@ class OpenClawClient:
             str: 任务ID
         """
         if not self._http_client:
-            self._http_client = httpx.AsyncClient(timeout=60.0)
+            self._http_client = httpx.AsyncClient(
+                timeout=60.0,
+                proxy=self.proxy,
+                trust_env=False if self.proxy is None else True
+            )
 
         try:
             response = await self._http_client.post(
@@ -108,7 +118,11 @@ class OpenClawClient:
             TaskResult: 任务结果
         """
         if not self._http_client:
-            self._http_client = httpx.AsyncClient(timeout=60.0)
+            self._http_client = httpx.AsyncClient(
+                timeout=60.0,
+                proxy=self.proxy,
+                trust_env=False if self.proxy is None else True
+            )
 
         try:
             response = await self._http_client.get(
@@ -227,7 +241,11 @@ class OpenClawClient:
     async def health_check(self) -> bool:
         """健康检查"""
         if not self._http_client:
-            self._http_client = httpx.AsyncClient(timeout=10.0)
+            self._http_client = httpx.AsyncClient(
+                timeout=10.0,
+                proxy=self.proxy,
+                trust_env=False if self.proxy is None else True
+            )
 
         try:
             response = await self._http_client.get(
