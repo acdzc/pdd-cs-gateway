@@ -1,6 +1,17 @@
-# 拼多多客服网关 (PDD CS Gateway)
+<h1 align="center">PDD CS Gateway</h1>
 
-拼多多客服消息处理网关，支持自动回复、飞书通知、OpenClaw AI 集成。
+<p align="center">拼多多客服消息处理网关：自动回复、人工接管、飞书通知与 OpenClaw AI 集成</p>
+
+<p align="center">
+  <a href="https://github.com/rfdiosuao/pdd-cs-gateway/actions/workflows/tests.yml"><img alt="Tests" src="https://img.shields.io/github/actions/workflow/status/rfdiosuao/pdd-cs-gateway/tests.yml?branch=main&style=flat-square&label=tests"></a>
+  <a href="LICENSE"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue?style=flat-square"></a>
+  <a href="https://github.com/rfdiosuao/pdd-cs-gateway/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/rfdiosuao/pdd-cs-gateway?style=flat-square&logo=github"></a>
+  <a href="https://github.com/rfdiosuao/pdd-cs-gateway/issues"><img alt="Issues" src="https://img.shields.io/github/issues/rfdiosuao/pdd-cs-gateway?style=flat-square"></a>
+  <a href="https://github.com/rfdiosuao/pdd-cs-gateway/commits/main"><img alt="Last commit" src="https://img.shields.io/github/last-commit/rfdiosuao/pdd-cs-gateway?style=flat-square"></a>
+</p>
+
+> [!IMPORTANT]
+> 生产部署必须使用拼多多官方接口并遵守平台规则。请将平台凭据放入环境变量或密钥管理服务，日志和 Issue 中不得包含真实订单、用户身份或聊天数据。
 
 ## 功能特性
 
@@ -180,6 +191,12 @@ black app/
 mypy app/
 ```
 
+## 参与贡献与安全
+
+- 开发和提交要求见 [`CONTRIBUTING.md`](CONTRIBUTING.md)。
+- 安全配置与漏洞报告方式见 [`SECURITY.md`](SECURITY.md)。
+- Bug 请使用结构化 [Issue 模板](https://github.com/rfdiosuao/pdd-cs-gateway/issues/new/choose)。
+
 ## License
 
-MIT
+[MIT License](LICENSE)
